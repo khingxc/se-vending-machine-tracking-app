@@ -1,0 +1,8 @@
+Flask
+SQLAlchemy
+gunicorn
+PyMySQL
+Flask-Caching
+Flask-SQLAlchemy
+sqlalchemy_utils
+mariadb==1.0.11
