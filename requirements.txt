@@ -1,8 +1,9 @@
-Flask
-SQLAlchemy
+postgres
+SQLAlchemy~=1.4.46
 gunicorn
 PyMySQL
-Flask-Caching
-Flask-SQLAlchemy
 sqlalchemy_utils
-mariadb==1.0.11
+psycopg2-binary
+Flask-SQLAlchemy
+python-dotenv~=0.21.0
+Flask~=2.2.2

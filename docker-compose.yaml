@@ -1,0 +1,16 @@
+version: '3'
+services:
+  database:
+    image: postgres
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=hardpass
+      - POSTGRES_DB=vending_machine_tracker
+    volumes:
+      - database:/var/lib/postgresql/data
+volumes:
+  database:
+    driver: local
