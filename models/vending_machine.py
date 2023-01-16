@@ -15,7 +15,7 @@ class VendingMachine(db.Model):
         self.location = location
         self.created_date = created_date
 
-    def serialize(self):
+    def serializer(self):
         return {
             'id': self.id,
             'location': self.location,
