@@ -50,9 +50,7 @@ class VendingMachineServices:
                 check_duplicate = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).all()
                 if len(check_duplicate) > 0:
                     item = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).first()
-                    print(item)
                     updated_amount = item.amount + int(amount)
-                    print(updated_amount)
                     item.amount = updated_amount
                     db.session.commit()
                     return jsonify(item.serializer()), 201
