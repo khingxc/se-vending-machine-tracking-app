@@ -38,7 +38,7 @@ class VendingMachineServices:
             db.session.commit()
             return jsonify(machine.serializer()), 200
         else:
-            return abort(400)
+            return abort(404)
 
     def get_machine(self, ID):
         machine = VendingMachine.query.get(ID)
@@ -52,8 +52,11 @@ class VendingMachineServices:
         return json.dumps([m.serializer() for m in all_machines])
 
     def add_item(self, ID, product, amount):
+        machine = VendingMachine.query.get(ID)
         if product is None or amount is None:
             return abort(400)
+        elif machine is None:
+            return abort(404)
         if ID.isdigit():
             try:
                 check_duplicate = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).all()
@@ -74,21 +77,30 @@ class VendingMachineServices:
             return abort(400)
 
     def delete_item(self, ID, product):
-        if product is None or VendingMachine.query.get(ID) is None or Stock.query.filter(Stock.machine_id == ID).filter(
-                Stock.product == product).first() is None:
+        machine = VendingMachine.query.get(ID)
+        target_item = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).first()
+        if product is None:
             return abort(400)
+        elif machine is None or target_item is None:
+            return abort(404)
         del_item = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).first()
         db.session.delete(del_item)
         db.session.commit()
         return "", 204
 
     def all_items(self, ID, product):
+        machine = VendingMachine.query.get(ID)
+        if machine is None:
+            return abort(404)
         items = Utils.filter_list("stock", ID)
         return json.dumps([i.serializer() for i in items])
 
     def edit_item(self, ID, product, amount):
-        if product is None or amount is None or VendingMachine.query.get(ID) is None:
+        machine = VendingMachine.query.get(ID)
+        if product is None or amount is None:
             return abort(400)
+        elif machine is None:
+            return abort(404)
         if int(amount) == 0:
             self.delete_item(ID, product)
         else:
