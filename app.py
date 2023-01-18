@@ -1,23 +1,29 @@
 import os
-import json
-import sqlalchemy
+from extensions import db
 from dotenv import load_dotenv
-from routes.view import view_bp
-from models import VendingMachine
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, request, jsonify
+from routes import view, create, delete
+from sqlalchemy import create_engine
+from flask import request, jsonify, Flask, Blueprint
+from sqlalchemy_utils import database_exists, create_database
+
 
 load_dotenv()
 
-url = f"postgresql://{os.environ.get('POSTGRES_USER')}:{os.environ.get('POSTGRES_PASSWORD')}@127.0.0.1:5432/{os.environ.get('POSTGRES_DB')}"
-
 app = Flask(__name__)
+url = os.environ['URL']
 app.config['SQLALCHEMY_DATABASE_URI'] = url
-app.register_blueprint(view_bp)
+engine = create_engine(url)
+if not database_exists(engine.url):
+    create_database(engine.url)
 
-with app.app_context():
-    db = SQLAlchemy(app)
-    db.create_all()
+if __name__ == '__main__':
+    db.init_app(app)
+    with app.app_conext():
+        db.create_all()
+    app.register_blueprint(view.view_bp)
+    app.register_blueprint(create.create_bp)
+    app.register_blueprint(delete.delete_bp)
+    app.run(debug=True)
 
-    if __name__ == '__main__':
-        app.run()
+
+
