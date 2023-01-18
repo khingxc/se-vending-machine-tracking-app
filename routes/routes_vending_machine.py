@@ -9,6 +9,11 @@ VendingMachine = model_vending_machine.VendingMachine
 Stock = model_stock.Stock
 
 
+@routes_vending_machine_bp.route("/machine", methods=['GET'])
+def view_all_machines():
+    return VendingMachineServices().get_all_machines()
+
+
 @routes_vending_machine_bp.route("/machine/create", methods=['POST'])
 def create_vending_machine():
     location = request.form.get("location")
@@ -16,16 +21,17 @@ def create_vending_machine():
     return jsonify(new_machine.serializer()), 201
 
 
-@routes_vending_machine_bp.route("/<ID>/delete", methods=['DELETE'])
-def delete_machine(ID):
-    return VendingMachineServices().delete_machine(ID)
-
-
 @routes_vending_machine_bp.route("/machine/<ID>/info", methods=['GET'])
 def view_machine(ID):
     return VendingMachineServices().get_machine(ID)
 
 
-@routes_vending_machine_bp.route("/machine", methods=['GET'])
-def view_all_machines():
-    return VendingMachineServices().get_all_machines()
+@routes_vending_machine_bp.route("/machine/<ID>/edit", methods=['POST'])
+def edit_machine(ID):
+    location = request.form.get("location")
+    return VendingMachineServices().edit_machine(ID, location)
+
+
+@routes_vending_machine_bp.route("/machine/<ID>/delete", methods=['DELETE'])
+def delete_machine(ID):
+    return VendingMachineServices().delete_machine(ID)

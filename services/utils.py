@@ -4,6 +4,7 @@ from models import model_vending_machine, model_stock
 VendingMachine = model_vending_machine.VendingMachine
 Stock = model_stock.Stock
 
+
 class Utils:
 
     def __init__(self):

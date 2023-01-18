@@ -31,6 +31,15 @@ class VendingMachineServices:
         db.session.commit()
         return "", 204
 
+    def edit_machine(self, ID, location):
+        machine = VendingMachine.query.get(ID)
+        if machine is not None:
+            machine.location = location
+            db.session.commit()
+            return jsonify(machine.serializer()), 200
+        else:
+            return abort(400)
+
     def get_machine(self, ID):
         machine = VendingMachine.query.get(ID)
         if machine is None:
@@ -63,3 +72,31 @@ class VendingMachineServices:
                 return abort(400)
         else:
             return abort(400)
+
+    def delete_item(self, ID, product):
+        if product is None or VendingMachine.query.get(ID) is None or Stock.query.filter(Stock.machine_id == ID).filter(
+                Stock.product == product).first() is None:
+            return abort(400)
+        del_item = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).first()
+        db.session.delete(del_item)
+        db.session.commit()
+        return "", 204
+
+    def all_items(self, ID, product):
+        items = Utils.filter_list("stock", ID)
+        return json.dumps([i.serializer() for i in items])
+
+    def edit_item(self, ID, product, amount):
+        if product is None or amount is None or VendingMachine.query.get(ID) is None:
+            return abort(400)
+        if int(amount) == 0:
+            self.delete_item(ID, product)
+        else:
+            check_duplicate = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).all()
+            if len(check_duplicate) > 0:
+                item = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).first()
+                item.amount = amount
+                db.session.commit()
+            else:
+                self.add_item(ID, product, amount)
+        return self.all_items(ID, product)

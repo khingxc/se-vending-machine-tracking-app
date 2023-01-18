@@ -1,9 +1,9 @@
 import os
+from flask import Flask
 from extensions import db
 from dotenv import load_dotenv
-from routes import routes_vending_machine, routes_stock
 from sqlalchemy import create_engine
-from flask import request, jsonify, Flask, Blueprint
+from routes import routes_vending_machine, routes_stock
 from sqlalchemy_utils import database_exists, create_database
 
 
