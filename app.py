@@ -1,7 +1,7 @@
 import os
 from extensions import db
 from dotenv import load_dotenv
-from routes import view, create, delete
+from routes import routes_vending_machine, routes_stock
 from sqlalchemy import create_engine
 from flask import request, jsonify, Flask, Blueprint
 from sqlalchemy_utils import database_exists, create_database
@@ -12,17 +12,17 @@ load_dotenv()
 app = Flask(__name__)
 url = os.environ['URL']
 app.config['SQLALCHEMY_DATABASE_URI'] = url
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 engine = create_engine(url)
 if not database_exists(engine.url):
     create_database(engine.url)
 
 if __name__ == '__main__':
     db.init_app(app)
-    with app.app_conext():
+    with app.app_context():
         db.create_all()
-    app.register_blueprint(view.view_bp)
-    app.register_blueprint(create.create_bp)
-    app.register_blueprint(delete.delete_bp)
+    app.register_blueprint(routes_stock.routes_stock_bp)
+    app.register_blueprint(routes_vending_machine.routes_vending_machine_bp)
     app.run(debug=True)
 
 
