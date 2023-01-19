@@ -10,9 +10,9 @@ from sqlalchemy_utils import database_exists, create_database
 load_dotenv()
 
 app = Flask(__name__)
-url = os.environ['URL']
-app.config['SQLALCHEMY_DATABASE_URI'] = url
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+url = os.environ["URL"]
+app.config["SQLALCHEMY_DATABASE_URI"] = url
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 engine = create_engine(url)
 if not database_exists(engine.url):
     create_database(engine.url)
@@ -22,8 +22,5 @@ with app.app_context():
 app.register_blueprint(routes_stock.routes_stock_bp)
 app.register_blueprint(routes_vending_machine.routes_vending_machine_bp)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
-
-
-

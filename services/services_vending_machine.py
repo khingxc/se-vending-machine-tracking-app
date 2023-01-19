@@ -59,9 +59,17 @@ class VendingMachineServices:
             return abort(404)
         if ID.isdigit():
             try:
-                check_duplicate = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).all()
+                check_duplicate = (
+                    Stock.query.filter(Stock.machine_id == ID)
+                    .filter(Stock.product == product)
+                    .all()
+                )
                 if len(check_duplicate) > 0:
-                    item = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).first()
+                    item = (
+                        Stock.query.filter(Stock.machine_id == ID)
+                        .filter(Stock.product == product)
+                        .first()
+                    )
                     updated_amount = item.amount + int(amount)
                     item.amount = updated_amount
                     db.session.commit()
@@ -78,12 +86,20 @@ class VendingMachineServices:
 
     def delete_item(self, ID, product):
         machine = VendingMachine.query.get(ID)
-        target_item = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).first()
+        target_item = (
+            Stock.query.filter(Stock.machine_id == ID)
+            .filter(Stock.product == product)
+            .first()
+        )
         if product is None:
             return abort(400)
         elif machine is None or target_item is None:
             return abort(404)
-        del_item = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).first()
+        del_item = (
+            Stock.query.filter(Stock.machine_id == ID)
+            .filter(Stock.product == product)
+            .first()
+        )
         db.session.delete(del_item)
         db.session.commit()
         return "", 204
@@ -104,9 +120,17 @@ class VendingMachineServices:
         if int(amount) == 0:
             self.delete_item(ID, product)
         else:
-            check_duplicate = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).all()
+            check_duplicate = (
+                Stock.query.filter(Stock.machine_id == ID)
+                .filter(Stock.product == product)
+                .all()
+            )
             if len(check_duplicate) > 0:
-                item = Stock.query.filter(Stock.machine_id == ID).filter(Stock.product == product).first()
+                item = (
+                    Stock.query.filter(Stock.machine_id == ID)
+                    .filter(Stock.product == product)
+                    .first()
+                )
                 item.amount = amount
                 db.session.commit()
             else:

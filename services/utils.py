@@ -6,7 +6,6 @@ Stock = model_stock.Stock
 
 
 class Utils:
-
     def __init__(self):
         self.db = db
 
