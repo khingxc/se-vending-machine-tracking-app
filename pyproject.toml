@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pytest-tutorial"
+name = "tests"
 version = "0.1.0"
 description = ""
 authors = ["Khwanchanok Chaichanayothinwatcahra <khwanchanok.chc@student.mahidol.edu>"]
