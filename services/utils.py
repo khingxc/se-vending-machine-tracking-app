@@ -1,3 +1,6 @@
+import random
+import string
+
 from extensions import db
 from models import model_vending_machine, model_stock
 
@@ -5,11 +8,15 @@ VendingMachine = model_vending_machine.VendingMachine
 Stock = model_stock.Stock
 
 
+def random_string():
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
+
+
 class Utils:
     def __init__(self):
         self.db = db
 
-    def filter_list(data, machine_id=0):
+    def filter_list(self, data: str, machine_id=0):
         match data.lower():
             case "machine":
                 machines = VendingMachine.query.order_by(VendingMachine.id)

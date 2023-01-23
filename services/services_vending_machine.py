@@ -24,7 +24,7 @@ class VendingMachineServices:
         machine = VendingMachine.query.get(ID)
         if machine is None:
             return abort(404)
-        machine_stocks = Utils.filter_list("stock", ID)
+        machine_stocks = Utils().filter_list("stock", ID)
         for machine_stock in machine_stocks:
             db.session.delete(machine_stock)
         db.session.delete(machine)
@@ -48,7 +48,7 @@ class VendingMachineServices:
             return jsonify(machine.serializer()), 200
 
     def get_all_machines(self, ID=None):
-        all_machines = Utils.filter_list("machine")
+        all_machines = Utils().filter_list("machine")
         return json.dumps([m.serializer() for m in all_machines])
 
     def add_item(self, ID, product, amount):
@@ -108,7 +108,7 @@ class VendingMachineServices:
         machine = VendingMachine.query.get(ID)
         if machine is None:
             return abort(404)
-        items = Utils.filter_list("stock", ID)
+        items = Utils().filter_list("stock", ID)
         return json.dumps([i.serializer() for i in items])
 
     def edit_item(self, ID, product, amount):
