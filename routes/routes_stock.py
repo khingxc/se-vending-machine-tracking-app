@@ -13,8 +13,7 @@ Stock = model_stock.Stock
 
 @routes_stock_bp.route("/machine/<ID>/item", methods=["GET"])
 def all_items_in_machine(ID):
-    product = request.form.get("product")
-    return VendingMachineServices().all_items(ID, product)
+    return VendingMachineServices().all_items(ID)
 
 
 @routes_stock_bp.route("/machine/<ID>/add_item", methods=["POST"])

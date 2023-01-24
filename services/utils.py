@@ -9,7 +9,7 @@ Stock = model_stock.Stock
 
 
 def random_string():
-    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
+    return "".join(random.choices(string.ascii_lowercase + string.digits, k=10))
 
 
 class Utils:

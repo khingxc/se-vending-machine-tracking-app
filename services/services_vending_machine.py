@@ -104,7 +104,7 @@ class VendingMachineServices:
         db.session.commit()
         return "", 204
 
-    def all_items(self, ID, product):
+    def all_items(self, ID):
         machine = VendingMachine.query.get(ID)
         if machine is None:
             return abort(404)
