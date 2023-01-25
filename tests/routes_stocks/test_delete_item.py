@@ -36,9 +36,7 @@ class TestDeleteItem(unittest.TestCase):
             machine_id = TestCreateMachine().test_create_machine_success()
         else:
             machine_id = random.choice(machines_response)["id"]
-        delete_item_url = (
-            f"{local_host_address}/machine/{machine_id}/delete_item"
-        )
+        delete_item_url = f"{local_host_address}/machine/{machine_id}/delete_item"
         response_delete = requests.delete(url=delete_item_url)
         assert response_delete.status_code == 400
 

@@ -77,7 +77,9 @@ class VendingMachineServices:
                     db.session.commit()
                     return jsonify(item.serializer()), 201
                 else:
-                    new_stock = Stock(machine_id=machine_id, product=product, amount=amount)
+                    new_stock = Stock(
+                        machine_id=machine_id, product=product, amount=amount
+                    )
                     db.session.add(new_stock)
                     db.session.commit()
                     return jsonify(new_stock.serializer()), 201

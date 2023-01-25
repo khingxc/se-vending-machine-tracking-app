@@ -32,6 +32,8 @@ def edit_machine(vending_machine_id: int):
     return VendingMachineServices().edit_machine(vending_machine_id, location)
 
 
-@routes_vending_machine_bp.route("/machine/<vending_machine_id>/delete", methods=["DELETE"])
+@routes_vending_machine_bp.route(
+    "/machine/<vending_machine_id>/delete", methods=["DELETE"]
+)
 def delete_machine(vending_machine_id: int):
     return VendingMachineServices().delete_machine(vending_machine_id)

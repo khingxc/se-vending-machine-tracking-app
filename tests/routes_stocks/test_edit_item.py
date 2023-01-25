@@ -43,7 +43,9 @@ class TestEditItem(unittest.TestCase):
         else:
             machine_id = random.choice(machines_response)["id"]
         edit_item_url = f"{local_host_address}/machine/{machine_id}/edit_item"
-        response_edit_item = requests.post(url=edit_item_url, data={"product": "", "amount": 0})
+        response_edit_item = requests.post(
+            url=edit_item_url, data={"product": "", "amount": 0}
+        )
         assert response_edit_item.status_code == 400
 
     def test_edit_item_fail_no_machine(self):
@@ -56,9 +58,10 @@ class TestEditItem(unittest.TestCase):
         while random_id in machine_ids:
             random_id = random.randint(0, max(machine_ids) * 10)
         edit_item_url = f"{local_host_address}/machine/{random_id}/edit_item"
-        response_edit_item = requests.post(url=edit_item_url, data={"product": mock_item, "amount": mock_amount})
+        response_edit_item = requests.post(
+            url=edit_item_url, data={"product": mock_item, "amount": mock_amount}
+        )
         assert response_edit_item.status_code == 404
-
 
 
 if __name__ == "__main__":
