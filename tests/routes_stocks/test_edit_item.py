@@ -39,11 +39,11 @@ class TestEditItem(unittest.TestCase):
         view_all_machine_url = f"{local_host_address}/machine"
         machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
-            machine_id = random.choice(machines_response)["id"]
-        else:
             machine_id = TestCreateMachine().test_create_machine_success()
+        else:
+            machine_id = random.choice(machines_response)["id"]
         edit_item_url = f"{local_host_address}/machine/{machine_id}/edit_item"
-        response_edit_item = requests.post(url=edit_item_url)
+        response_edit_item = requests.post(url=edit_item_url, data={"product": "", "amount": 0})
         assert response_edit_item.status_code == 400
 
     def test_edit_item_fail_no_machine(self):

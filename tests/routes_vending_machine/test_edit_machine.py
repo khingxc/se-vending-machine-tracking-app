@@ -15,14 +15,14 @@ class TestEditMachine(unittest.TestCase):
         view_all_machine_url = f"{local_host_address}/machine"
         machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
-            machine_id = random.choice(machines_response)["id"]
-        else:
             create_machine_url = f"{local_host_address}/machine/create"
             mock_location = random_string()
             response_json = (requests.post(
                 url=create_machine_url, data={"location": mock_location}
             )).json()
             machine_id = response_json["id"]
+        else:
+            machine_id = random.choice(machines_response)["id"]
         new_mock_location = random_string()
         edit_machine_url = f"{local_host_address}/machine/{machine_id}/edit"
         response = requests.post(
@@ -36,14 +36,14 @@ class TestEditMachine(unittest.TestCase):
         view_all_machine_url = f"{local_host_address}/machine"
         machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
-            machine_id = random.choice(machines_response)["id"]
-        else:
             create_machine_url = f"{local_host_address}/machine/create"
             mock_location = random_string()
             response_json = (requests.post(
                 url=create_machine_url, data={"location": mock_location}
             )).json()
             machine_id = response_json["id"]
+        else:
+            machine_id = random.choice(machines_response)["id"]
         edit_machine_url = f"{local_host_address}/machine/{machine_id}/edit"
         response = requests.post(url=edit_machine_url)
         assert response.status_code == 400

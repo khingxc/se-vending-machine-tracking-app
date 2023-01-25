@@ -16,14 +16,14 @@ class TestViewMachine(unittest.TestCase):
         view_all_machine_url = f"{local_host_address}/machine"
         machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
-            machine_id = random.choice(machines_response)["id"]
-        else:
             create_machine_url = f"{local_host_address}/machine/create"
             mock_location = random_string()
             response_json = (requests.post(
                 url=create_machine_url, data={"location": mock_location}
             )).json()
             machine_id = response_json["id"]
+        else:
+            machine_id = random.choice(machines_response)["id"]
         view_machine_url = f"{local_host_address}/machine/{machine_id}/info"
         response = requests.get(url=view_machine_url)
         response_json = response.json()

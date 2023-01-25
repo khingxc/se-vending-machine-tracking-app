@@ -14,14 +14,14 @@ class TestDeleteMachine(unittest.TestCase):
         view_all_machine_url = f"{local_host_address}/machine"
         machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
-            machine_id = random.choice(machines_response)["id"]
-        else:
             create_machine_url = f"{local_host_address}/machine/create"
             mock_location = utils.random_string()
             response_json = (requests.post(
                 url=create_machine_url, data={"location": mock_location}
             )).json()
             machine_id = response_json["id"]
+        else:
+            machine_id = random.choice(machines_response)["id"]
         delete_machine_url = f"{local_host_address}/machine/{machine_id}/delete"
         response = requests.delete(url=delete_machine_url)
         assert response.status_code == 204

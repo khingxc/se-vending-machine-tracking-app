@@ -16,9 +16,9 @@ class TestAddItem(unittest.TestCase):
         view_all_machine_url = f"{local_host_address}/machine"
         machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
-            machine_id = random.choice(machines_response)["id"]
-        else:
             machine_id = TestCreateMachine().test_create_machine_success()
+        else:
+            machine_id = random.choice(machines_response)["id"]
         mock_item = utils.random_string()
         mock_amount = random.randint(1, 10)
         add_item_url = f"{local_host_address}/machine/{machine_id}/add_item"
@@ -34,11 +34,11 @@ class TestAddItem(unittest.TestCase):
         view_all_machine_url = f"{local_host_address}/machine"
         machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
-            machine_id = random.choice(machines_response)["id"]
-        else:
             machine_id = TestCreateMachine().test_create_machine_success()
+        else:
+            machine_id = random.choice(machines_response)["id"]
         add_item_url = f"{local_host_address}/machine/{machine_id}/add_item"
-        response = requests.post(url=add_item_url)
+        response = requests.post(url=add_item_url, data={"product": "", "amount": 0})
         assert response.status_code == 400
 
     def test_add_item_fail_no_machine(self):

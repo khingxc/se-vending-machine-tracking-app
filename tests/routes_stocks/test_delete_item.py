@@ -33,9 +33,9 @@ class TestDeleteItem(unittest.TestCase):
         view_all_machine_url = f"{local_host_address}/machine"
         machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
-            machine_id = random.choice(machines_response)["id"]
-        else:
             machine_id = TestCreateMachine().test_create_machine_success()
+        else:
+            machine_id = random.choice(machines_response)["id"]
         delete_item_url = (
             f"{local_host_address}/machine/{machine_id}/delete_item"
         )

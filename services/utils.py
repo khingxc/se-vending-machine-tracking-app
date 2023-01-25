@@ -16,7 +16,7 @@ class Utils:
     def __init__(self):
         self.db = db
 
-    def filter_list(self, data: str, machine_id=0):
+    def filter_list(self, data: str, machine_id: int = 0):
         match data.lower():
             case "machine":
                 machines = VendingMachine.query.order_by(VendingMachine.id)
