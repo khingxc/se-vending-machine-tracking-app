@@ -16,19 +16,19 @@ class TestEditItem(unittest.TestCase):
         created_machine_id = TestCreateMachine().test_create_machine_success()
         mock_item = utils.random_string()
         mock_amount = random.randint(1, 10)
-        add_item_url = f"{local_host_address}/machine/{created_machine_id}/add_item"
+        add_item_url = f"{local_host_address}/machine/{created_machine_id}/add-item"
         response_create = requests.post(
             url=add_item_url, data={"product": mock_item, "amount": mock_amount}
         )
         assert response_create.status_code == 201
-        edit_item_url = f"{local_host_address}/machine/{created_machine_id}/edit_item"
+        edit_item_url = f"{local_host_address}/machine/{created_machine_id}/edit-item"
         mock_amount = random.randint(25, 50)
         response_edit_item = requests.post(
             url=edit_item_url, data={"product": mock_item, "amount": mock_amount}
         )
         assert response_edit_item.status_code == 200
         delete_item_url = (
-            f"{local_host_address}/machine/{created_machine_id}/delete_item"
+            f"{local_host_address}/machine/{created_machine_id}/delete-item"
         )
         response_delete = requests.delete(
             url=delete_item_url, data={"product": mock_item}
@@ -42,7 +42,7 @@ class TestEditItem(unittest.TestCase):
             machine_id = TestCreateMachine().test_create_machine_success()
         else:
             machine_id = random.choice(machines_response)["id"]
-        edit_item_url = f"{local_host_address}/machine/{machine_id}/edit_item"
+        edit_item_url = f"{local_host_address}/machine/{machine_id}/edit-item"
         response_edit_item = requests.post(
             url=edit_item_url, data={"product": "", "amount": 0}
         )
@@ -57,7 +57,7 @@ class TestEditItem(unittest.TestCase):
         mock_amount = random.randint(25, 50)
         while random_id in machine_ids:
             random_id = random.randint(0, max(machine_ids) * 10)
-        edit_item_url = f"{local_host_address}/machine/{random_id}/edit_item"
+        edit_item_url = f"{local_host_address}/machine/{random_id}/edit-item"
         response_edit_item = requests.post(
             url=edit_item_url, data={"product": mock_item, "amount": mock_amount}
         )

@@ -21,7 +21,7 @@ class TestAddItem(unittest.TestCase):
             machine_id = random.choice(machines_response)["id"]
         mock_item = utils.random_string()
         mock_amount = random.randint(1, 10)
-        add_item_url = f"{local_host_address}/machine/{machine_id}/add_item"
+        add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
         response = requests.post(
             url=add_item_url, data={"product": mock_item, "amount": mock_amount}
         )
@@ -37,7 +37,7 @@ class TestAddItem(unittest.TestCase):
             machine_id = TestCreateMachine().test_create_machine_success()
         else:
             machine_id = random.choice(machines_response)["id"]
-        add_item_url = f"{local_host_address}/machine/{machine_id}/add_item"
+        add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
         response = requests.post(url=add_item_url, data={"product": "", "amount": 0})
         assert response.status_code == 400
 
@@ -50,7 +50,7 @@ class TestAddItem(unittest.TestCase):
             random_id = random.randint(0, max(machine_ids) * 10)
         mock_item = utils.random_string()
         mock_amount = random.randint(1, 10)
-        add_item_url = f"{local_host_address}/machine/{random_id}/add_item"
+        add_item_url = f"{local_host_address}/machine/{random_id}/add-item"
         response = requests.post(
             url=add_item_url, data={"product": mock_item, "amount": mock_amount}
         )

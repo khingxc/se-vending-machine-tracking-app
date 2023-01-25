@@ -16,7 +16,7 @@ class TestViewItem(unittest.TestCase):
         created_machine_id = TestCreateMachine().test_create_machine_success()
         mock_item = utils.random_string()
         mock_amount = random.randint(1, 10)
-        add_item_url = f"{local_host_address}/machine/{created_machine_id}/add_item"
+        add_item_url = f"{local_host_address}/machine/{created_machine_id}/add-item"
         response_create = requests.post(
             url=add_item_url, data={"product": mock_item, "amount": mock_amount}
         )
@@ -28,7 +28,7 @@ class TestViewItem(unittest.TestCase):
         assert response_view_item_json["product"] == mock_item
         assert response_view_item_json["amount"] == mock_amount
         delete_item_url = (
-            f"{local_host_address}/machine/{created_machine_id}/delete_item"
+            f"{local_host_address}/machine/{created_machine_id}/delete-item"
         )
         response_delete = requests.delete(
             url=delete_item_url, data={"product": mock_item}

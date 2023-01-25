@@ -16,13 +16,13 @@ class TestDeleteItem(unittest.TestCase):
         created_machine_id = TestCreateMachine().test_create_machine_success()
         mock_item = utils.random_string()
         mock_amount = random.randint(1, 10)
-        add_item_url = f"{local_host_address}/machine/{created_machine_id}/add_item"
+        add_item_url = f"{local_host_address}/machine/{created_machine_id}/add-item"
         response_create = requests.post(
             url=add_item_url, data={"product": mock_item, "amount": mock_amount}
         )
         assert response_create.status_code == 201
         delete_item_url = (
-            f"{local_host_address}/machine/{created_machine_id}/delete_item"
+            f"{local_host_address}/machine/{created_machine_id}/delete-item"
         )
         response_delete = requests.delete(
             url=delete_item_url, data={"product": mock_item}
@@ -36,7 +36,7 @@ class TestDeleteItem(unittest.TestCase):
             machine_id = TestCreateMachine().test_create_machine_success()
         else:
             machine_id = random.choice(machines_response)["id"]
-        delete_item_url = f"{local_host_address}/machine/{machine_id}/delete_item"
+        delete_item_url = f"{local_host_address}/machine/{machine_id}/delete-item"
         response_delete = requests.delete(url=delete_item_url)
         assert response_delete.status_code == 400
 

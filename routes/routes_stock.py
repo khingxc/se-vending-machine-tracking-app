@@ -16,7 +16,7 @@ def all_items_in_machine(vending_machine_id: int):
     return VendingMachineServices().all_items(vending_machine_id)
 
 
-@routes_stock_bp.route("/machine/<vending_machine_id>/add_item", methods=["POST"])
+@routes_stock_bp.route("/machine/<vending_machine_id>/add-item", methods=["POST"])
 def add_item_to_machine(vending_machine_id: int):
     product: str = request.form.get("product")
     amount: str = request.form.get("amount")
@@ -25,7 +25,7 @@ def add_item_to_machine(vending_machine_id: int):
     )
 
 
-@routes_stock_bp.route("/machine/<vending_machine_id>/delete_item", methods=["DELETE"])
+@routes_stock_bp.route("/machine/<vending_machine_id>/delete-item", methods=["DELETE"])
 def delete_item(vending_machine_id: int):
     product: str = request.form.get("product")
     return VendingMachineServices().delete_item(
@@ -33,7 +33,7 @@ def delete_item(vending_machine_id: int):
     )
 
 
-@routes_stock_bp.route("/machine/<vending_machine_id>/edit_item", methods=["POST"])
+@routes_stock_bp.route("/machine/<vending_machine_id>/edit-item", methods=["POST"])
 def edit_item_on_machine(vending_machine_id: int):
     product: str = request.form.get("product")
     amount: str = request.form.get("amount")
