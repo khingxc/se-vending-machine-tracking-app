@@ -30,16 +30,14 @@ class TestDeleteItem(unittest.TestCase):
         assert response_delete.status_code == 204
 
     def test_delete_item_fail_no_params(self):
-        created_machine_id = TestCreateMachine().test_create_machine_success()
-        mock_item = utils.random_string()
-        mock_amount = random.randint(1, 10)
-        add_item_url = f"{local_host_address}/machine/{created_machine_id}/add_item"
-        response_create = requests.post(
-            url=add_item_url, data={"product": mock_item, "amount": mock_amount}
-        )
-        assert response_create.status_code == 201
+        view_all_machine_url = f"{local_host_address}/machine"
+        machines_response = (requests.get(url=view_all_machine_url)).json()
+        if len(machines_response) == 0:
+            machine_id = random.choice(machines_response)["id"]
+        else:
+            machine_id = TestCreateMachine().test_create_machine_success()
         delete_item_url = (
-            f"{local_host_address}/machine/{created_machine_id}/delete_item"
+            f"{local_host_address}/machine/{machine_id}/delete_item"
         )
         response_delete = requests.delete(url=delete_item_url)
         assert response_delete.status_code == 400

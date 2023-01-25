@@ -33,6 +33,8 @@ class VendingMachineServices:
 
     def edit_machine(self, ID, location):
         machine = VendingMachine.query.get(ID)
+        if location is None:
+            return abort(400)
         if machine is not None:
             machine.location = location
             db.session.commit()
@@ -135,4 +137,4 @@ class VendingMachineServices:
                 db.session.commit()
             else:
                 self.add_item(ID, product, amount)
-        return self.all_items(ID, product)
+        return self.all_items(ID)

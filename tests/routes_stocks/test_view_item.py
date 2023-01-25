@@ -23,7 +23,10 @@ class TestViewItem(unittest.TestCase):
         assert response_create.status_code == 201
         view_item_url = f"{local_host_address}/machine/{created_machine_id}/item"
         response_view_item = requests.get(url=view_item_url)
+        response_view_item_json = (response_view_item.json())[0]
         assert response_view_item.status_code == 200
+        assert response_view_item_json["product"] == mock_item
+        assert response_view_item_json["amount"] == mock_amount
         delete_item_url = (
             f"{local_host_address}/machine/{created_machine_id}/delete_item"
         )
@@ -33,7 +36,15 @@ class TestViewItem(unittest.TestCase):
         assert response_delete.status_code == 204
 
     def test_view_item_fail_no_machine(self):
-        pass
+        view_all_machine_url = f"{local_host_address}/machine"
+        machines_response = (requests.get(url=view_all_machine_url)).json()
+        machine_ids = [machine["id"] for machine in machines_response]
+        random_id = random.randint(0, max(machine_ids) * 10)
+        while random_id in machine_ids:
+            random_id = random.randint(0, max(machine_ids) * 10)
+        view_item_url = f"{local_host_address}/machine/{random_id}/item"
+        response_view_item = requests.get(url=view_item_url)
+        assert response_view_item.status_code == 404
 
 
 if __name__ == "__main__":

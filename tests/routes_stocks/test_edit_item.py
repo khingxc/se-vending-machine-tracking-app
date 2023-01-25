@@ -36,10 +36,29 @@ class TestEditItem(unittest.TestCase):
         assert response_delete.status_code == 204
 
     def test_edit_item_fail_no_params(self):
-        created_machine_id = TestCreateMachine().test_create_machine_success()
-        edit_item_url = f"{local_host_address}/machine/{created_machine_id}/edit_item"
+        view_all_machine_url = f"{local_host_address}/machine"
+        machines_response = (requests.get(url=view_all_machine_url)).json()
+        if len(machines_response) == 0:
+            machine_id = random.choice(machines_response)["id"]
+        else:
+            machine_id = TestCreateMachine().test_create_machine_success()
+        edit_item_url = f"{local_host_address}/machine/{machine_id}/edit_item"
         response_edit_item = requests.post(url=edit_item_url)
         assert response_edit_item.status_code == 400
+
+    def test_edit_item_fail_no_machine(self):
+        view_all_machine_url = f"{local_host_address}/machine"
+        machines_response = (requests.get(url=view_all_machine_url)).json()
+        machine_ids = [machine["id"] for machine in machines_response]
+        random_id = random.randint(0, max(machine_ids) * 10)
+        mock_item = utils.random_string()
+        mock_amount = random.randint(25, 50)
+        while random_id in machine_ids:
+            random_id = random.randint(0, max(machine_ids) * 10)
+        edit_item_url = f"{local_host_address}/machine/{random_id}/edit_item"
+        response_edit_item = requests.post(url=edit_item_url, data={"product": mock_item, "amount": mock_amount})
+        assert response_edit_item.status_code == 404
+
 
 
 if __name__ == "__main__":
