@@ -8,12 +8,12 @@ from services import utils
 load_dotenv()
 
 local_host_address = os.environ["LOCALHOST_ADDR"]
+view_all_machine_url = f"{local_host_address}/machine"
+machines_response = (requests.get(url=view_all_machine_url)).json()
 
 
 class TestDeleteMachine(unittest.TestCase):
     def test_delete_machine_success(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
             create_machine_url = f"{local_host_address}/machine/create"
             mock_location = utils.random_string()
@@ -28,8 +28,6 @@ class TestDeleteMachine(unittest.TestCase):
         assert response.status_code == 204
 
     def test_delete_machine_fail_no_machine(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
         machine_ids = [machine["id"] for machine in machines_response]
         random_id = random.randint(0, max(machine_ids) * 10)
         while random_id in machine_ids:

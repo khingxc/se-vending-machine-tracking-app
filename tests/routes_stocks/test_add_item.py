@@ -9,12 +9,12 @@ from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 load_dotenv()
 
 local_host_address = os.environ["LOCALHOST_ADDR"]
+view_all_machine_url = f"{local_host_address}/machine"
+machines_response = (requests.get(url=view_all_machine_url)).json()
 
 
 class TestAddItem(unittest.TestCase):
     def test_add_item_success(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
             machine_id = TestCreateMachine().test_create_machine_success()
         else:
@@ -31,8 +31,6 @@ class TestAddItem(unittest.TestCase):
         assert response_json["amount"] == mock_amount
 
     def test_add_item_fail_no_params(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
             machine_id = TestCreateMachine().test_create_machine_success()
         else:
@@ -42,8 +40,6 @@ class TestAddItem(unittest.TestCase):
         assert response.status_code == 400
 
     def test_add_item_fail_no_machine(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
         machine_ids = [machine["id"] for machine in machines_response]
         random_id = random.randint(0, max(machine_ids) * 10)
         while random_id in machine_ids:

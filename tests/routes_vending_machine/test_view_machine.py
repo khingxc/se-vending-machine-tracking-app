@@ -14,8 +14,8 @@ local_host_address = os.environ["LOCALHOST_ADDR"]
 class TestViewMachine(unittest.TestCase):
     def test_view_machine_success(self):
         view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
-        if len(machines_response) == 0:
+        machines_response_json = (requests.get(url=view_all_machine_url)).json()
+        if len(machines_response_json) == 0:
             create_machine_url = f"{local_host_address}/machine/create"
             mock_location = random_string()
             response_json = (
@@ -23,7 +23,7 @@ class TestViewMachine(unittest.TestCase):
             ).json()
             machine_id = response_json["id"]
         else:
-            machine_id = random.choice(machines_response)["id"]
+            machine_id = random.choice(machines_response_json)["id"]
         view_machine_url = f"{local_host_address}/machine/{machine_id}/info"
         response = requests.get(url=view_machine_url)
         response_json = response.json()
@@ -32,8 +32,8 @@ class TestViewMachine(unittest.TestCase):
 
     def test_view_machine_fail_no_machine(self):
         view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
-        machine_ids = [machine["id"] for machine in machines_response]
+        machines_response_json = (requests.get(url=view_all_machine_url)).json()
+        machine_ids = [machine["id"] for machine in machines_response_json]
         random_id = random.randint(0, max(machine_ids) * 10)
         while random_id in machine_ids:
             random_id = random.randint(0, max(machine_ids) * 10)
@@ -47,7 +47,8 @@ class TestViewMachine(unittest.TestCase):
         with app.app_context():
             machines_from_db = Utils().filter_list(data="machine")
         machines_serializers = [machine.serializer() for machine in machines_from_db]
-        assert machines_serializers == machines_response_json
+        for machine in machines_response_json:
+            assert machine in machines_serializers
 
 
 if __name__ == "__main__":

@@ -9,6 +9,8 @@ from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 load_dotenv()
 
 local_host_address = os.environ["LOCALHOST_ADDR"]
+view_all_machine_url = f"{local_host_address}/machine"
+machines_response_json = (requests.get(url=view_all_machine_url)).json()
 
 
 class TestEditItem(unittest.TestCase):
@@ -36,12 +38,11 @@ class TestEditItem(unittest.TestCase):
         assert response_delete.status_code == 204
 
     def test_edit_item_fail_no_params(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
-        if len(machines_response) == 0:
+
+        if len(machines_response_json) == 0:
             machine_id = TestCreateMachine().test_create_machine_success()
         else:
-            machine_id = random.choice(machines_response)["id"]
+            machine_id = random.choice(machines_response_json)["id"]
         edit_item_url = f"{local_host_address}/machine/{machine_id}/edit-item"
         response_edit_item = requests.post(
             url=edit_item_url, data={"product": "", "amount": 0}
@@ -49,9 +50,7 @@ class TestEditItem(unittest.TestCase):
         assert response_edit_item.status_code == 400
 
     def test_edit_item_fail_no_machine(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
-        machine_ids = [machine["id"] for machine in machines_response]
+        machine_ids = [machine["id"] for machine in machines_response_json]
         random_id = random.randint(0, max(machine_ids) * 10)
         mock_item = utils.random_string()
         mock_amount = random.randint(25, 50)

@@ -8,12 +8,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 local_host_address = os.environ["LOCALHOST_ADDR"]
+view_all_machine_url = f"{local_host_address}/machine"
+machines_response = (requests.get(url=view_all_machine_url)).json()
 
 
 class TestEditMachine(unittest.TestCase):
     def test_edit_machine_success(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
             create_machine_url = f"{local_host_address}/machine/create"
             mock_location = random_string()
@@ -33,8 +33,6 @@ class TestEditMachine(unittest.TestCase):
         assert response_json["location"] == new_mock_location
 
     def test_edit_machine_fail_no_params(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
         if len(machines_response) == 0:
             create_machine_url = f"{local_host_address}/machine/create"
             mock_location = random_string()
@@ -49,8 +47,6 @@ class TestEditMachine(unittest.TestCase):
         assert response.status_code == 400
 
     def test_edit_machine_fail_no_machine(self):
-        view_all_machine_url = f"{local_host_address}/machine"
-        machines_response = (requests.get(url=view_all_machine_url)).json()
         machine_ids = [machine["id"] for machine in machines_response]
         random_id = random.randint(0, max(machine_ids) * 10)
         while random_id in machine_ids:
