@@ -16,22 +16,24 @@ def view_all_machines():
 
 @routes_vending_machine_bp.route("/machine/create", methods=["POST"])
 def create_vending_machine():
-    location = request.form.get("location")
+    location: str = request.form.get("location")
     new_machine = VendingMachineServices().create_machine(location)
     return jsonify(new_machine.serializer()), 201
 
 
-@routes_vending_machine_bp.route("/machine/<ID>/info", methods=["GET"])
-def view_machine(ID):
-    return VendingMachineServices().get_machine(ID)
+@routes_vending_machine_bp.route("/machine/<vending_machine_id>/info", methods=["GET"])
+def view_machine(vending_machine_id: int):
+    return VendingMachineServices().get_machine(vending_machine_id)
 
 
-@routes_vending_machine_bp.route("/machine/<ID>/edit", methods=["POST"])
-def edit_machine(ID):
-    location = request.form.get("location")
-    return VendingMachineServices().edit_machine(ID, location)
+@routes_vending_machine_bp.route("/machine/<vending_machine_id>/edit", methods=["POST"])
+def edit_machine(vending_machine_id: int):
+    location: str = request.form.get("location")
+    return VendingMachineServices().edit_machine(vending_machine_id, location)
 
 
-@routes_vending_machine_bp.route("/machine/<ID>/delete", methods=["DELETE"])
-def delete_machine(ID):
-    return VendingMachineServices().delete_machine(ID)
+@routes_vending_machine_bp.route(
+    "/machine/<vending_machine_id>/delete", methods=["DELETE"]
+)
+def delete_machine(vending_machine_id: int):
+    return VendingMachineServices().delete_machine(vending_machine_id)
