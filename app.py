@@ -1,11 +1,13 @@
+"""Running the whole application."""
 import os
-from flask import Flask
-from extensions import db
-from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from routes import routes_vending_machine, routes_stock
-from sqlalchemy_utils import database_exists, create_database
 
+from dotenv import load_dotenv
+from flask import Flask
+from sqlalchemy import create_engine
+from sqlalchemy_utils import create_database, database_exists
+
+from extensions import db
+from routes import routes_stock, routes_vending_machine
 
 load_dotenv()
 

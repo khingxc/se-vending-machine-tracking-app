@@ -12,16 +12,16 @@
 * Deleting product from specific machine
 * Editing product from specific machine
 
-## Set Up 
+## Set Up
 
-* Running docker-compose: ```docker compose up -d``` 
+* Running docker-compose: ```docker compose up -d```
 * Running python file: ```python3 app.py```
   * Remark: please check that you are currently on the right directory
 
 ## Close The Project
 
 * Running ```docker compose down``` / Exit via Docker Desktop
-* Executing the running ```app.py``` 
+* Executing the running ```app.py```
 
 ## Testing
 
