@@ -37,7 +37,7 @@ class Utils:
 
     def filter_list(self, data: str, machine_id: int = 0) -> List[Any]:
         """Return list in choices: Machine or Stock of existed Machine. Else, empty list."""
-        match data.lower():
+        match data:
             case "machines":
                 machines = VendingMachine.query.order_by(VendingMachine.id)
                 return [m for m in machines]
