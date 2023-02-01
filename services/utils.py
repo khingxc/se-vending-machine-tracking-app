@@ -37,15 +37,15 @@ class Utils:
 
     def filter_list(self, data: str, machine_id: int = 0) -> List[Any]:
         """Return list in choices: Machine or Stock of existed Machine. Else, empty list."""
-        match data:
-            case "machines":
-                machines = VendingMachine.query.order_by(VendingMachine.id)
-                return [m for m in machines]
-            case "stock":
-                stocks = Stock.query.filter(Stock.machine_id == int(machine_id))
-                if stocks is not None:
-                    return [s for s in stocks]
-        return []
+        if data.lower() == "machines":
+            machines = VendingMachine.query.order_by(VendingMachine.id)
+            return [m for m in machines]
+        elif data.lower() == "stock":
+            stocks = Stock.query.filter(Stock.machine_id == int(machine_id))
+            if stocks is not None:
+                return [s for s in stocks]
+        else:
+            return []
 
     def get_all_machines(self) -> List[VendingMachine]:
         """Return list of all created machines."""
