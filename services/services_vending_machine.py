@@ -48,9 +48,7 @@ class VendingMachineServices:
         db.session.commit()
         return "", 204
 
-    def edit_machine(
-        self, machine_id: int, location: str
-    ) -> VendingMachine | tuple[str, int]:
+    def edit_machine(self, machine_id: int, location: str) -> VendingMachine:
         """Edit existed machine's info."""
         if location is None or len(location.strip()) == 0:
             return abort(400)
