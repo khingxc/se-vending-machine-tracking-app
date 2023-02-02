@@ -1,7 +1,5 @@
-import os
 import unittest
 
-from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
 from app import app
@@ -9,11 +7,6 @@ from services import utils
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_amount, random_string
 from tests.routes_vending_machine.test_create_machine import TestCreateMachine
-
-load_dotenv()
-
-local_host_address = os.environ["LOCALHOST_ADDR"]
-view_all_machine_url = f"{local_host_address}/machine"
 
 
 class TestEditItem(unittest.TestCase):
@@ -26,7 +19,7 @@ class TestEditItem(unittest.TestCase):
         with app.app_context():
             machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
-            edit_item_url = f"{local_host_address}/machine/{machine_id}/edit-item"
+            edit_item_url = f"/machine/{machine_id}/edit-item"
             new_amount = mock_amount + 20
             response_edit_item = app.test_client().post(
                 edit_item_url, data={"product": mock_item, "amount": new_amount}
@@ -37,7 +30,7 @@ class TestEditItem(unittest.TestCase):
         """Test editing item with no param on existed machine via API expected to get error code 400."""
         with app.app_context():
             machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
-            edit_item_url = f"{local_host_address}/machine/{machine_id}/edit-item"
+            edit_item_url = f"/machine/{machine_id}/edit-item"
             response_edit_item = app.test_client().post(
                 edit_item_url, data={"product": "", "amount": 0}
             )
@@ -49,7 +42,7 @@ class TestEditItem(unittest.TestCase):
             random_id = Utils().get_invalid_machine_id()
             mock_item = utils.random_string()
             mock_amount = random_amount()
-            edit_item_url = f"{local_host_address}/machine/{random_id}/edit-item"
+            edit_item_url = f"/machine/{random_id}/edit-item"
             response_edit_item = app.test_client().post(
                 edit_item_url, data={"product": mock_item, "amount": mock_amount}
             )

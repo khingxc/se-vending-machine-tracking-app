@@ -1,8 +1,6 @@
 import json
-import os
 import unittest
 
-from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
 from app import app
@@ -11,10 +9,6 @@ from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_amount, random_string
 from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
-load_dotenv()
-
-local_host_address = os.environ["LOCALHOST_ADDR"]
-
 
 def create_machine_with_stock() -> tuple[int, str, int]:
     """Create new machine that has an item inside. Return machine ID, product name, and product amount."""
@@ -22,7 +16,7 @@ def create_machine_with_stock() -> tuple[int, str, int]:
         machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
         mock_item = random_string()
         mock_amount = random_amount()
-        add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
+        add_item_url = f"/machine/{machine_id}/add-item"
         response_create = app.test_client().post(
             add_item_url, data={"product": mock_item, "amount": mock_amount}
         )
@@ -40,7 +34,7 @@ class TestViewItem(unittest.TestCase):
             machine_id: int = new_machine_with_stock[0]
             mock_item: str = new_machine_with_stock[1]
             mock_amount: int = new_machine_with_stock[2]
-            view_item_url = f"{local_host_address}/machine/{machine_id}/item"
+            view_item_url = f"/machine/{machine_id}/item"
             response_view_item = app.test_client().get(view_item_url)
             response_view_item_json = (response_view_item.get_data()).decode("utf-8")
             response_in_string = response_view_item_json[
@@ -55,7 +49,7 @@ class TestViewItem(unittest.TestCase):
         """Test viewing item on non-existed machine via API expected error code 404."""
         with app.app_context():
             random_id = Utils().get_invalid_machine_id()
-            view_item_url = f"{local_host_address}/machine/{random_id}/item"
+            view_item_url = f"/machine/{random_id}/item"
             response_view_item = app.test_client().get(view_item_url)
             assert response_view_item.status_code == 404
 

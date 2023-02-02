@@ -1,8 +1,6 @@
-import os
 import unittest
 from typing import List
 
-from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
 from app import app
@@ -10,13 +8,6 @@ from models.model_vending_machine import VendingMachine
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils
 from tests.routes_vending_machine.test_create_machine import TestCreateMachine
-
-load_dotenv()
-
-local_host_address = os.environ["LOCALHOST_ADDR"]
-view_all_machine_url = f"{local_host_address}/machine"
-create_machine_url = f"{local_host_address}/machine/create"
-
 
 with app.app_context():
     all_machines: List[VendingMachine] = VendingMachineServices().get_all_machines()
@@ -29,7 +20,7 @@ class TestViewMachine(unittest.TestCase):
         """Test viewing existed machine via API expected status code 200 and matching id."""
         with app.app_context():
             machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
-            view_machine_url = f"{local_host_address}/machine/{machine_id}/info"
+            view_machine_url = f"/machine/{machine_id}/info"
             response = app.test_client().get(view_machine_url)
             response_json = response.get_json()
             assert response.status_code == 200
@@ -39,7 +30,7 @@ class TestViewMachine(unittest.TestCase):
         """Test viewing non-existed machine via API expected error code 404."""
         with app.app_context():
             random_id = Utils().get_invalid_machine_id()
-            view_machine_url = f"{local_host_address}/machine/{random_id}/info"
+            view_machine_url = f"/machine/{random_id}/info"
             response = app.test_client().get(view_machine_url)
         assert response.status_code == 404
 

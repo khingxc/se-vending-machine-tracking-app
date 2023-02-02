@@ -61,6 +61,10 @@ jobs:
       - name: Test with Pytest
         run: |
           poetry run pytest
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: hardpass
+          POSTGRES_DB: vending_machine_tracker
 
       - name: Upload coverage report artifact
         uses: actions/upload-artifact@v2
