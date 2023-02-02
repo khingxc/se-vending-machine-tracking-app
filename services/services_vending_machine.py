@@ -95,9 +95,7 @@ class VendingMachineServices:
         db.session.commit()
         return new_stock
 
-    def add_item(
-        self, machine_id: int, product: str, amount: int
-    ) -> Stock | tuple[str, int]:
+    def add_item(self, machine_id: int, product: str, amount: int) -> Stock:
         """Add item to the existed machine, and if successful, return info of added item. Else, error code."""
         machine = VendingMachine.query.get(machine_id)
         if product is None or amount == 0 or len(product.strip()) == 0:
@@ -148,9 +146,7 @@ class VendingMachineServices:
         items = Utils().filter_list("stock", machine_id)
         return items
 
-    def edit_item(
-        self, machine_id: int, product: str, amount: int
-    ) -> List[Stock] | tuple[str, int]:
+    def edit_item(self, machine_id: int, product: str, amount: int) -> List[Stock]:
         """Edit item in existed machine and return updated stock list. Else, error code."""
         machine = VendingMachine.query.get(machine_id)
         if product is None or len(product.strip()) == 0:
