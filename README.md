@@ -1,5 +1,5 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=khingxc_se-vending-machine-tracking-app&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=khingxc_se-vending-machine-tracking-app)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=khingxc_se-vending-machine-tracking-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=khingxc_se-vending-machine-tracking-app)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=khingxc_se-vending-machine-tracking-app&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=khingxc_se-vending-machine-tracking-app)
 
 # Vending Machine Tracking Application
 
