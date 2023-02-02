@@ -1,62 +1,91 @@
 import os
-import random
-import requests
 import unittest
-from services.utils import random_string
+from typing import List
+
 from dotenv import load_dotenv
+from werkzeug.exceptions import HTTPException
+
+from app import app
+from models.model_vending_machine import VendingMachine
+from services.services_vending_machine import VendingMachineServices
+from services.utils import Utils, random_string
+from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
 load_dotenv()
 
 local_host_address = os.environ["LOCALHOST_ADDR"]
-view_all_machine_url = f"{local_host_address}/machine"
-machines_response = (requests.get(url=view_all_machine_url)).json()
+
+with app.app_context():
+    all_machines: List[VendingMachine] = Utils().filter_list("machines")
 
 
 class TestEditMachine(unittest.TestCase):
-    def test_edit_machine_success(self):
-        if len(machines_response) == 0:
-            create_machine_url = f"{local_host_address}/machine/create"
-            mock_location = random_string()
-            response_json = (
-                requests.post(url=create_machine_url, data={"location": mock_location})
-            ).json()
-            machine_id = response_json["id"]
-        else:
-            machine_id = random.choice(machines_response)["id"]
-        new_mock_location = random_string()
-        edit_machine_url = f"{local_host_address}/machine/{machine_id}/edit"
-        response = requests.post(
-            url=edit_machine_url, data={"location": new_mock_location}
-        )
-        response_json = response.json()
-        assert response.status_code == 200
-        assert response_json["location"] == new_mock_location
+    """Test edit machine with additional cases included +/- cases and testing from functions and APIs."""
 
-    def test_edit_machine_fail_no_params(self):
-        if len(machines_response) == 0:
-            create_machine_url = f"{local_host_address}/machine/create"
-            mock_location = random_string()
-            response_json = (
-                requests.post(url=create_machine_url, data={"location": mock_location})
-            ).json()
-            machine_id = response_json["id"]
-        else:
-            machine_id = random.choice(machines_response)["id"]
-        edit_machine_url = f"{local_host_address}/machine/{machine_id}/edit"
-        response = requests.post(url=edit_machine_url)
-        assert response.status_code == 400
+    def test_edit_machine_by_api_success(self) -> None:
+        """Test editing machine with all requirements via API expected status code 200."""
+        with app.app_context():
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
+            new_mock_location: str = random_string()
+            edit_machine_url: str = f"{local_host_address}/machine/{machine_id}/edit"
+            response = app.test_client().post(
+                edit_machine_url, data={"location": new_mock_location}
+            )
+            response_json = response.get_json()
+            assert response.status_code == 200
+            assert response_json["location"] == new_mock_location
 
-    def test_edit_machine_fail_no_machine(self):
-        machine_ids = [machine["id"] for machine in machines_response]
-        random_id = random.randint(0, max(machine_ids) * 10)
-        while random_id in machine_ids:
-            random_id = random.randint(0, max(machine_ids) * 10)
-        new_mock_location = random_string()
-        edit_machine_url = f"{local_host_address}/machine/{random_id}/edit"
-        response = requests.post(
-            url=edit_machine_url, data={"location": new_mock_location}
-        )
-        assert response.status_code == 404
+    def test_edit_machine_by_api_fail_no_params(self) -> None:
+        """Test editing machine with no param via API expected error code 400 (bad request)."""
+        with app.app_context():
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
+            edit_machine_url: str = f"{local_host_address}/machine/{machine_id}/edit"
+            response = app.test_client().post(edit_machine_url)
+            assert response.status_code == 400
+
+    def test_edit_machine_by_api_fail_no_machine(self) -> None:
+        """Test editing non-existed machine with all requirements via API expected error code 404."""
+        with app.app_context():
+            invalid_machine_id: int = Utils().get_invalid_machine_id()
+            new_mock_location: str = random_string()
+            edit_machine_url: str = (
+                f"{local_host_address}/machine/{invalid_machine_id}/edit"
+            )
+            response = app.test_client().post(
+                edit_machine_url, data={"location": new_mock_location}
+            )
+            assert response.status_code == 404
+
+    def test_edit_machine_by_function_success(self) -> None:
+        """Test editing machine with all requirements via function expected status code 200."""
+        with app.app_context():
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
+            new_mock_location: str = random_string()
+            edit_machine_result = VendingMachineServices().edit_machine(
+                machine_id, new_mock_location
+            )
+            saved_location: str = edit_machine_result.location
+            assert type(edit_machine_result) == VendingMachine
+            assert saved_location == new_mock_location
+
+    def test_edit_machine_by_function_fail_no_location(self) -> None:
+        """Test editing existed machine with no data via function expected error code 400."""
+        with self.assertRaises(HTTPException) as http_error:
+            with app.app_context():
+                machine_id: int = (
+                    TestCreateMachine().test_create_machine_by_api_success()
+                )
+                VendingMachineServices().edit_machine(machine_id, "")
+            assert http_error.exception.code == 400
+
+    def test_edit_machine_by_function_fail_no_machine(self) -> None:
+        """Test editing non-existed machine with all requirements via function expected status code 404."""
+        with self.assertRaises(HTTPException) as http_error:
+            with app.app_context():
+                mock_location: str = random_string()
+                machine_id: int = Utils().get_invalid_machine_id()
+                VendingMachineServices().edit_machine(machine_id, mock_location)
+            assert http_error.exception.code == 404
 
 
 if __name__ == "__main__":

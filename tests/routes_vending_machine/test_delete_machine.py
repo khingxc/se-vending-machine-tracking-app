@@ -1,40 +1,69 @@
 import os
-import random
-import requests
 import unittest
+
 from dotenv import load_dotenv
-from services import utils
+from werkzeug.exceptions import HTTPException
+
+from app import app
+from services.services_vending_machine import VendingMachineServices
+from services.utils import Utils, random_amount, random_string
+from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
 load_dotenv()
 
 local_host_address = os.environ["LOCALHOST_ADDR"]
 view_all_machine_url = f"{local_host_address}/machine"
-machines_response = (requests.get(url=view_all_machine_url)).json()
 
 
 class TestDeleteMachine(unittest.TestCase):
-    def test_delete_machine_success(self):
-        if len(machines_response) == 0:
-            create_machine_url = f"{local_host_address}/machine/create"
-            mock_location = utils.random_string()
-            response_json = (
-                requests.post(url=create_machine_url, data={"location": mock_location})
-            ).json()
-            machine_id = response_json["id"]
-        else:
-            machine_id = random.choice(machines_response)["id"]
-        delete_machine_url = f"{local_host_address}/machine/{machine_id}/delete"
-        response = requests.delete(url=delete_machine_url)
-        assert response.status_code == 204
+    """Test delete machine with additional cases included +/- cases and testing from functions and APIs."""
 
-    def test_delete_machine_fail_no_machine(self):
-        machine_ids = [machine["id"] for machine in machines_response]
-        random_id = random.randint(0, max(machine_ids) * 10)
-        while random_id in machine_ids:
-            random_id = random.randint(0, max(machine_ids) * 10)
-        delete_machine_url = f"{local_host_address}/machine/{random_id}/delete"
-        response = requests.delete(url=delete_machine_url)
-        assert response.status_code == 404
+    def test_delete_machine_by_api_success(self) -> None:
+        """Test deleting machine with valid machine id via API expected status code 204."""
+        with app.app_context():
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
+            delete_machine_url = f"{local_host_address}/machine/{machine_id}/delete"
+            response = app.test_client().delete(delete_machine_url)
+            assert response.status_code == 204
+
+    def test_delete_machine_by_api_fail_no_machine(self) -> None:
+        """Test deleting machine with invalid machine id via API expected error code 404."""
+        with app.app_context():
+            random_id = Utils().get_invalid_machine_id()
+            delete_machine_url = f"{local_host_address}/machine/{random_id}/delete"
+            response = app.test_client().delete(delete_machine_url)
+            assert response.status_code == 404
+
+    def test_delete_machine_by_function_success(self) -> None:
+        """Test deleting machine with valid machine id via function expected status code 204."""
+        with app.app_context():
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
+            delete_machine: tuple[str, int] = VendingMachineServices().delete_machine(
+                machine_id
+            )
+            status_code: int = delete_machine[1]
+            assert status_code == 204
+
+    def test_delete_machine_by_function_success_with_stocks(self) -> None:
+        """Test deleting existed machine that has item inside via function expected status code 204."""
+        mock_item: str = random_string()
+        mock_amount = random_amount()
+        with app.app_context():
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
+            VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
+            delete_machine_response: tuple[
+                str, int
+            ] = VendingMachineServices().delete_machine(machine_id)
+            status_code: int = delete_machine_response[1]
+            assert status_code == 204
+
+    def test_delete_machine_by_function_fail(self) -> None:
+        """Test deleting machine with invalid id via function expected error code 404."""
+        with self.assertRaises(HTTPException) as http_error:
+            with app.app_context():
+                random_id = Utils().get_invalid_machine_id()
+                VendingMachineServices().delete_machine(random_id)
+                assert http_error.exception.code == 404
 
 
 if __name__ == "__main__":

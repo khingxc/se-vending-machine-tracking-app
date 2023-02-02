@@ -8,3 +8,4 @@ python-dotenv~=0.21.0
 Flask~=2.2.2
 Flask-Script==2.0.6
 requests
+pytest-cov

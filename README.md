@@ -1,3 +1,6 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=khingxc_se-vending-machine-tracking-app&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=khingxc_se-vending-machine-tracking-app)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=khingxc_se-vending-machine-tracking-app&metric=coverage)](https://sonarcloud.io/summary/new_code?id=khingxc_se-vending-machine-tracking-app)
+
 # Vending Machine Tracking Application
 
 ## Functionalities
@@ -12,20 +15,23 @@
 * Deleting product from specific machine
 * Editing product from specific machine
 
-## Set Up 
+## Set Up
 
-* Running docker-compose: ```docker compose up -d``` 
-* Running python file: ```python3 app.py```
+* Running docker-compose: ```docker compose up -d```
+* Activating virtual env using poetry: ```poetry shell```
+* Running python file in poetry shell: ```python3 app.py```
   * Remark: please check that you are currently on the right directory
 
 ## Close The Project
 
 * Running ```docker compose down``` / Exit via Docker Desktop
-* Executing the running ```app.py``` 
+* Executing the running ```app.py```
+* Exit virtual env: ```exit```
 
 ## Testing
 
 * Postman
+* Pytest: ```pytest```
 
 ## Available APIs
 
