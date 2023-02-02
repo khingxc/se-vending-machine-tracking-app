@@ -1,7 +1,6 @@
 import os
 import unittest
 
-import requests
 from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
@@ -28,8 +27,8 @@ class TestEditItem(unittest.TestCase):
             VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
             edit_item_url = f"{local_host_address}/machine/{machine_id}/edit-item"
             new_amount = mock_amount + 20
-            response_edit_item = requests.post(
-                url=edit_item_url, data={"product": mock_item, "amount": new_amount}
+            response_edit_item = app.test_client().post(
+                edit_item_url, data={"product": mock_item, "amount": new_amount}
             )
             assert response_edit_item.status_code == 200
 
@@ -38,8 +37,8 @@ class TestEditItem(unittest.TestCase):
         with app.app_context():
             machine_id = Utils().get_valid_machine_id()
             edit_item_url = f"{local_host_address}/machine/{machine_id}/edit-item"
-            response_edit_item = requests.post(
-                url=edit_item_url, data={"product": "", "amount": 0}
+            response_edit_item = app.test_client().post(
+                edit_item_url, data={"product": "", "amount": 0}
             )
             assert response_edit_item.status_code == 400
 
@@ -50,8 +49,8 @@ class TestEditItem(unittest.TestCase):
             mock_item = utils.random_string()
             mock_amount = random_amount()
             edit_item_url = f"{local_host_address}/machine/{random_id}/edit-item"
-            response_edit_item = requests.post(
-                url=edit_item_url, data={"product": mock_item, "amount": mock_amount}
+            response_edit_item = app.test_client().post(
+                edit_item_url, data={"product": mock_item, "amount": mock_amount}
             )
             assert response_edit_item.status_code == 404
 

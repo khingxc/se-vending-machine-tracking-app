@@ -1,7 +1,6 @@
 import os
 import unittest
 
-import requests
 from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
@@ -29,13 +28,13 @@ class TestDeleteItem(unittest.TestCase):
             mock_item = random_string()
             mock_amount = random_amount()
             add_item_url = f"{local_host_address}/machine/{new_machine_id}/add-item"
-            response_create = requests.post(
-                url=add_item_url, data={"product": mock_item, "amount": mock_amount}
+            response_create = app.test_client().post(
+                add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
         assert response_create.status_code == 201
         delete_item_url = f"{local_host_address}/machine/{new_machine_id}/delete-item"
-        response_delete = requests.delete(
-            url=delete_item_url, data={"product": mock_item}
+        response_delete = app.test_client().delete(
+            delete_item_url, data={"product": mock_item}
         )
         assert response_delete.status_code == 204
 
@@ -44,7 +43,7 @@ class TestDeleteItem(unittest.TestCase):
         with app.app_context():
             machine_id = Utils().get_valid_machine_id()
             delete_item_url = f"{local_host_address}/machine/{machine_id}/delete-item"
-            response_delete = requests.delete(url=delete_item_url)
+            response_delete = app.test_client().delete(delete_item_url)
         assert response_delete.status_code == 400
 
     def test_delete_item_by_function_successful(self) -> None:
@@ -54,8 +53,8 @@ class TestDeleteItem(unittest.TestCase):
             mock_item = random_string()
             mock_amount = random_amount()
             add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
-            response_create = requests.post(
-                url=add_item_url, data={"product": mock_item, "amount": mock_amount}
+            response_create = app.test_client().post(
+                add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
             assert response_create.status_code == 201
             delete_response: tuple[str, int] = VendingMachineServices().delete_item(

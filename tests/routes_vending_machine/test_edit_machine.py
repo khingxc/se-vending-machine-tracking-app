@@ -2,9 +2,7 @@ import os
 import unittest
 from typing import List
 
-import requests
 from dotenv import load_dotenv
-from requests import Response
 from werkzeug.exceptions import HTTPException
 
 from app import app
@@ -29,10 +27,10 @@ class TestEditMachine(unittest.TestCase):
             machine_id: int = Utils().get_valid_machine_id()
             new_mock_location: str = random_string()
             edit_machine_url: str = f"{local_host_address}/machine/{machine_id}/edit"
-            response: Response = requests.post(
-                url=edit_machine_url, data={"location": new_mock_location}
+            response = app.test_client().post(
+                edit_machine_url, data={"location": new_mock_location}
             )
-            response_json = response.json()
+            response_json = response.get_json()
             assert response.status_code == 200
             assert response_json["location"] == new_mock_location
 
@@ -41,7 +39,7 @@ class TestEditMachine(unittest.TestCase):
         with app.app_context():
             machine_id: int = Utils().get_valid_machine_id()
             edit_machine_url: str = f"{local_host_address}/machine/{machine_id}/edit"
-            response: Response = requests.post(url=edit_machine_url)
+            response = app.test_client().post(edit_machine_url)
             assert response.status_code == 400
 
     def test_edit_machine_by_api_fail_no_machine(self) -> None:
@@ -52,8 +50,8 @@ class TestEditMachine(unittest.TestCase):
             edit_machine_url: str = (
                 f"{local_host_address}/machine/{invalid_machine_id}/edit"
             )
-            response: Response = requests.post(
-                url=edit_machine_url, data={"location": new_mock_location}
+            response = app.test_client().post(
+                edit_machine_url, data={"location": new_mock_location}
             )
             assert response.status_code == 404
 

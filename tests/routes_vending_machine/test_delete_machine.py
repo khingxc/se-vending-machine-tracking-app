@@ -1,7 +1,6 @@
 import os
 import unittest
 
-import requests
 from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
@@ -27,7 +26,7 @@ class TestDeleteMachine(unittest.TestCase):
             )
             new_machine_id: int = new_machine.serializer()["id"]
             delete_machine_url = f"{local_host_address}/machine/{new_machine_id}/delete"
-            response = requests.delete(url=delete_machine_url)
+            response = app.test_client().delete(delete_machine_url)
             assert response.status_code == 204
 
     def test_delete_machine_by_api_fail_no_machine(self) -> None:
@@ -35,7 +34,7 @@ class TestDeleteMachine(unittest.TestCase):
         with app.app_context():
             random_id = Utils().get_invalid_machine_id()
             delete_machine_url = f"{local_host_address}/machine/{random_id}/delete"
-            response = requests.delete(url=delete_machine_url)
+            response = app.test_client().delete(delete_machine_url)
             assert response.status_code == 404
 
     def test_delete_machine_by_function_success(self) -> None:

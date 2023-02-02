@@ -1,7 +1,7 @@
+import json
 import os
 import unittest
 
-import requests
 from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
@@ -27,8 +27,8 @@ def create_machine_with_stock() -> tuple[int, str, int]:
         mock_item = random_string()
         mock_amount = random_amount()
         add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
-        response_create = requests.post(
-            url=add_item_url, data={"product": mock_item, "amount": mock_amount}
+        response_create = app.test_client().post(
+            add_item_url, data={"product": mock_item, "amount": mock_amount}
         )
         assert response_create.status_code == 201
     return machine_id, mock_item, mock_amount
@@ -45,18 +45,22 @@ class TestViewItem(unittest.TestCase):
             mock_item: str = new_machine_with_stock[1]
             mock_amount: int = new_machine_with_stock[2]
             view_item_url = f"{local_host_address}/machine/{machine_id}/item"
-            response_view_item = requests.get(url=view_item_url)
-            response_view_item_json = (response_view_item.json())[0]
+            response_view_item = app.test_client().get(view_item_url)
+            response_view_item_json = (response_view_item.get_data()).decode("utf-8")
+            response_in_string = response_view_item_json[
+                1 : len(response_view_item_json) - 1
+            ]
+            response_in_dict = json.loads(response_in_string)
             assert response_view_item.status_code == 200
-            assert response_view_item_json["product"] == mock_item
-            assert response_view_item_json["amount"] == mock_amount
+            assert response_in_dict["product"] == mock_item
+            assert response_in_dict["amount"] == mock_amount
 
     def test_view_item_by_api_fail_no_machine(self) -> None:
         """Test viewing item on non-existed machine via API expected error code 404."""
         with app.app_context():
             random_id = Utils().get_invalid_machine_id()
             view_item_url = f"{local_host_address}/machine/{random_id}/item"
-            response_view_item = requests.get(url=view_item_url)
+            response_view_item = app.test_client().get(view_item_url)
             assert response_view_item.status_code == 404
 
     def test_view_item_by_function_success(self) -> None:

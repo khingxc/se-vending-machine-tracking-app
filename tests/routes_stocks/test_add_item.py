@@ -1,7 +1,6 @@
 import os
 import unittest
 
-import requests
 from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
@@ -26,10 +25,10 @@ class TestAddItem(unittest.TestCase):
             mock_item = random_string()
             mock_amount = random_amount()
             add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
-            response = requests.post(
-                url=add_item_url, data={"product": mock_item, "amount": mock_amount}
+            response = app.test_client().post(
+                add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
-            response_json = response.json()
+            response_json = response.get_json()
         assert response.status_code == 201
         assert response_json["product"] == mock_item
         assert response_json["amount"] == mock_amount
@@ -39,8 +38,8 @@ class TestAddItem(unittest.TestCase):
         with app.app_context():
             machine_id = Utils().get_valid_machine_id()
             add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
-            response = requests.post(
-                url=add_item_url, data={"product": "", "amount": 0}
+            response = app.test_client().post(
+                add_item_url, data={"product": "", "amount": 0}
             )
         assert response.status_code == 400
 
@@ -51,8 +50,8 @@ class TestAddItem(unittest.TestCase):
             mock_item = random_string()
             mock_amount = random_amount()
             add_item_url = f"{local_host_address}/machine/{random_id}/add-item"
-            response = requests.post(
-                url=add_item_url, data={"product": mock_item, "amount": mock_amount}
+            response = app.test_client().post(
+                add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
         assert response.status_code == 404
 
