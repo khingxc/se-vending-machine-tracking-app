@@ -29,9 +29,9 @@ class TestAddItem(unittest.TestCase):
                 add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
             response_json = response.get_json()
-        assert response.status_code == 201
-        assert response_json["product"] == mock_item
-        assert response_json["amount"] == mock_amount
+            assert response.status_code == 201
+            assert response_json["product"] == mock_item
+            assert response_json["amount"] == mock_amount
 
     def test_add_item_api_fail_no_param(self) -> None:
         """Test adding item to existed machine with invalid requirement via API expected error code 400."""
@@ -41,7 +41,7 @@ class TestAddItem(unittest.TestCase):
             response = app.test_client().post(
                 add_item_url, data={"product": "", "amount": 0}
             )
-        assert response.status_code == 400
+            assert response.status_code == 400
 
     def test_add_item_api_fail_no_machine(self) -> None:
         """Test adding item to non-existed machine with all requirements via API expected error code 404."""
@@ -53,7 +53,7 @@ class TestAddItem(unittest.TestCase):
             response = app.test_client().post(
                 add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
-        assert response.status_code == 404
+            assert response.status_code == 404
 
     def test_add_item_func_fail_no_param(self) -> None:
         """Test adding item to existed machine with invalid requirement via function expected error code 400."""
@@ -61,7 +61,7 @@ class TestAddItem(unittest.TestCase):
             with app.app_context():
                 machine_id = Utils().get_valid_machine_id()
                 VendingMachineServices().add_item(machine_id, "", 0)
-            assert http_error.exception.code == 400
+                assert http_error.exception.code == 400
 
     def test_add_item_func_fail_no_machine(self) -> None:
         """Test adding item to non-existed machine with all requirements via function expected error code 404."""

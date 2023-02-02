@@ -31,12 +31,14 @@ class TestDeleteItem(unittest.TestCase):
             response_create = app.test_client().post(
                 add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
-        assert response_create.status_code == 201
-        delete_item_url = f"{local_host_address}/machine/{new_machine_id}/delete-item"
-        response_delete = app.test_client().delete(
-            delete_item_url, data={"product": mock_item}
-        )
-        assert response_delete.status_code == 204
+            assert response_create.status_code == 201
+            delete_item_url = (
+                f"{local_host_address}/machine/{new_machine_id}/delete-item"
+            )
+            response_delete = app.test_client().delete(
+                delete_item_url, data={"product": mock_item}
+            )
+            assert response_delete.status_code == 204
 
     def test_delete_item_by_api_fail_no_params(self) -> None:
         """Test deleting item with no input via API expected error code 400 (bad request)."""
@@ -44,7 +46,7 @@ class TestDeleteItem(unittest.TestCase):
             machine_id = Utils().get_valid_machine_id()
             delete_item_url = f"{local_host_address}/machine/{machine_id}/delete-item"
             response_delete = app.test_client().delete(delete_item_url)
-        assert response_delete.status_code == 400
+            assert response_delete.status_code == 400
 
     def test_delete_item_by_function_successful(self) -> None:
         """Test deleting item in existed machine via function expected to be successful."""

@@ -57,8 +57,8 @@ class TestDeleteMachine(unittest.TestCase):
             delete_machine_response: tuple[
                 str, int
             ] = VendingMachineServices().delete_machine(machine_id)
-        status_code: int = delete_machine_response[1]
-        assert status_code == 204
+            status_code: int = delete_machine_response[1]
+            assert status_code == 204
 
     def test_delete_machine_by_function_fail(self) -> None:
         """Test deleting machine with invalid id via function expected error code 404."""
@@ -66,7 +66,7 @@ class TestDeleteMachine(unittest.TestCase):
             with app.app_context():
                 random_id = Utils().get_invalid_machine_id()
                 VendingMachineServices().delete_machine(random_id)
-            assert http_error.exception.code == 404
+                assert http_error.exception.code == 404
 
 
 if __name__ == "__main__":
