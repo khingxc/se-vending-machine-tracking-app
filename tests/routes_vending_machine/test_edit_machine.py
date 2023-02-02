@@ -1,8 +1,6 @@
-import os
 import unittest
 from typing import List
 
-from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
 from app import app
@@ -10,10 +8,6 @@ from models.model_vending_machine import VendingMachine
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_string
 from tests.routes_vending_machine.test_create_machine import TestCreateMachine
-
-load_dotenv()
-
-local_host_address = os.environ["LOCALHOST_ADDR"]
 
 with app.app_context():
     all_machines: List[VendingMachine] = Utils().filter_list("machines")
@@ -27,7 +21,7 @@ class TestEditMachine(unittest.TestCase):
         with app.app_context():
             machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             new_mock_location: str = random_string()
-            edit_machine_url: str = f"{local_host_address}/machine/{machine_id}/edit"
+            edit_machine_url: str = f"/machine/{machine_id}/edit"
             response = app.test_client().post(
                 edit_machine_url, data={"location": new_mock_location}
             )
@@ -39,7 +33,7 @@ class TestEditMachine(unittest.TestCase):
         """Test editing machine with no param via API expected error code 400 (bad request)."""
         with app.app_context():
             machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
-            edit_machine_url: str = f"{local_host_address}/machine/{machine_id}/edit"
+            edit_machine_url: str = f"/machine/{machine_id}/edit"
             response = app.test_client().post(edit_machine_url)
             assert response.status_code == 400
 
@@ -48,9 +42,7 @@ class TestEditMachine(unittest.TestCase):
         with app.app_context():
             invalid_machine_id: int = Utils().get_invalid_machine_id()
             new_mock_location: str = random_string()
-            edit_machine_url: str = (
-                f"{local_host_address}/machine/{invalid_machine_id}/edit"
-            )
+            edit_machine_url: str = f"/machine/{invalid_machine_id}/edit"
             response = app.test_client().post(
                 edit_machine_url, data={"location": new_mock_location}
             )

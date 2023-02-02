@@ -1,19 +1,12 @@
-import os
 import secrets
 import string
 from typing import Any, List
-
-from dotenv import load_dotenv
 
 from extensions import db
 from models import model_stock, model_vending_machine
 
 VendingMachine = model_vending_machine.VendingMachine
 Stock = model_stock.Stock
-
-load_dotenv()
-
-local_host_address = os.environ["LOCALHOST_ADDR"]
 
 
 def random_string() -> str:

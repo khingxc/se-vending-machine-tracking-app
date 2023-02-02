@@ -13,7 +13,10 @@ from routes.routes_vending_machine import routes_vending_machine_bp
 load_dotenv()
 
 app = Flask(__name__)
-url = os.environ["URL"]
+user = os.environ["POSTGRES_USER"]
+password = os.environ["POSTGRES_PASSWORD"]
+pg = os.environ["POSTGRES_DB"]
+url = f"postgresql://{user}:{password}@localhost:5432/{pg}"
 app.config["SQLALCHEMY_DATABASE_URI"] = url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 engine = create_engine(url)

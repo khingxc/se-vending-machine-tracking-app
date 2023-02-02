@@ -1,7 +1,5 @@
-import os
 import unittest
 
-from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
 from app import app
@@ -9,11 +7,7 @@ from models.model_vending_machine import VendingMachine
 from services import utils
 from services.services_vending_machine import VendingMachineServices
 
-load_dotenv()
-
-local_host_address = os.environ["LOCALHOST_ADDR"]
-
-create_machine_url = f"{local_host_address}/machine/create"
+create_machine_url = "/machine/create"
 
 
 class TestCreateMachine(unittest.TestCase):

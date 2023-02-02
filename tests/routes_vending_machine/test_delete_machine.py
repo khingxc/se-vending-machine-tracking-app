@@ -1,18 +1,11 @@
-import os
 import unittest
 
-from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
 from app import app
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_amount, random_string
 from tests.routes_vending_machine.test_create_machine import TestCreateMachine
-
-load_dotenv()
-
-local_host_address = os.environ["LOCALHOST_ADDR"]
-view_all_machine_url = f"{local_host_address}/machine"
 
 
 class TestDeleteMachine(unittest.TestCase):
@@ -22,7 +15,7 @@ class TestDeleteMachine(unittest.TestCase):
         """Test deleting machine with valid machine id via API expected status code 204."""
         with app.app_context():
             machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
-            delete_machine_url = f"{local_host_address}/machine/{machine_id}/delete"
+            delete_machine_url = f"/machine/{machine_id}/delete"
             response = app.test_client().delete(delete_machine_url)
             assert response.status_code == 204
 
@@ -30,7 +23,7 @@ class TestDeleteMachine(unittest.TestCase):
         """Test deleting machine with invalid machine id via API expected error code 404."""
         with app.app_context():
             random_id = Utils().get_invalid_machine_id()
-            delete_machine_url = f"{local_host_address}/machine/{random_id}/delete"
+            delete_machine_url = f"/machine/{random_id}/delete"
             response = app.test_client().delete(delete_machine_url)
             assert response.status_code == 404
 

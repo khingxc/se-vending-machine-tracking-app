@@ -1,17 +1,11 @@
-import os
 import unittest
 
-from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
 from app import app
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_amount, random_string
 from tests.routes_vending_machine.test_create_machine import TestCreateMachine
-
-load_dotenv()
-
-local_host_address = os.environ["LOCALHOST_ADDR"]
 
 
 class TestDeleteItem(unittest.TestCase):
@@ -23,12 +17,12 @@ class TestDeleteItem(unittest.TestCase):
             machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             mock_item = random_string()
             mock_amount = random_amount()
-            add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
+            add_item_url = f"/machine/{machine_id}/add-item"
             response_create = app.test_client().post(
                 add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
             assert response_create.status_code == 201
-            delete_item_url = f"{local_host_address}/machine/{machine_id}/delete-item"
+            delete_item_url = f"/machine/{machine_id}/delete-item"
             response_delete = app.test_client().delete(
                 delete_item_url, data={"product": mock_item}
             )
@@ -38,7 +32,7 @@ class TestDeleteItem(unittest.TestCase):
         """Test deleting item with no input via API expected error code 400 (bad request)."""
         with app.app_context():
             machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
-            delete_item_url = f"{local_host_address}/machine/{machine_id}/delete-item"
+            delete_item_url = f"/machine/{machine_id}/delete-item"
             response_delete = app.test_client().delete(delete_item_url)
             assert response_delete.status_code == 400
 
@@ -48,7 +42,7 @@ class TestDeleteItem(unittest.TestCase):
             machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             mock_item = random_string()
             mock_amount = random_amount()
-            add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
+            add_item_url = f"/machine/{machine_id}/add-item"
             response_create = app.test_client().post(
                 add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
