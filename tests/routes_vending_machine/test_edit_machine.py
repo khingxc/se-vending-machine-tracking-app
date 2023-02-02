@@ -9,6 +9,7 @@ from app import app
 from models.model_vending_machine import VendingMachine
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_string
+from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
 load_dotenv()
 
@@ -24,7 +25,7 @@ class TestEditMachine(unittest.TestCase):
     def test_edit_machine_by_api_success(self) -> None:
         """Test editing machine with all requirements via API expected status code 200."""
         with app.app_context():
-            machine_id: int = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             new_mock_location: str = random_string()
             edit_machine_url: str = f"{local_host_address}/machine/{machine_id}/edit"
             response = app.test_client().post(
@@ -37,7 +38,7 @@ class TestEditMachine(unittest.TestCase):
     def test_edit_machine_by_api_fail_no_params(self) -> None:
         """Test editing machine with no param via API expected error code 400 (bad request)."""
         with app.app_context():
-            machine_id: int = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             edit_machine_url: str = f"{local_host_address}/machine/{machine_id}/edit"
             response = app.test_client().post(edit_machine_url)
             assert response.status_code == 400
@@ -58,7 +59,7 @@ class TestEditMachine(unittest.TestCase):
     def test_edit_machine_by_function_success(self) -> None:
         """Test editing machine with all requirements via function expected status code 200."""
         with app.app_context():
-            machine_id: int = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             new_mock_location: str = random_string()
             edit_machine_result = VendingMachineServices().edit_machine(
                 machine_id, new_mock_location
@@ -71,7 +72,9 @@ class TestEditMachine(unittest.TestCase):
         """Test editing existed machine with no data via function expected error code 400."""
         with self.assertRaises(HTTPException) as http_error:
             with app.app_context():
-                machine_id: int = Utils().get_valid_machine_id()
+                machine_id: int = (
+                    TestCreateMachine().test_create_machine_by_api_success()
+                )
                 VendingMachineServices().edit_machine(machine_id, "")
             assert http_error.exception.code == 400
 

@@ -8,6 +8,7 @@ from app import app
 from models.model_stock import Stock
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_amount, random_string
+from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
 load_dotenv()
 
@@ -21,7 +22,7 @@ class TestAddItem(unittest.TestCase):
     def test_add_item_api_success(self) -> None:
         """Test adding item to existed machine with all requirements via API. Expected Result: Item added."""
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             mock_item = random_string()
             mock_amount = random_amount()
             add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
@@ -36,7 +37,7 @@ class TestAddItem(unittest.TestCase):
     def test_add_item_api_fail_no_param(self) -> None:
         """Test adding item to existed machine with invalid requirement via API expected error code 400."""
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
             response = app.test_client().post(
                 add_item_url, data={"product": "", "amount": 0}
@@ -59,7 +60,9 @@ class TestAddItem(unittest.TestCase):
         """Test adding item to existed machine with invalid requirement via function expected error code 400."""
         with self.assertRaises(HTTPException) as http_error:
             with app.app_context():
-                machine_id = Utils().get_valid_machine_id()
+                machine_id: int = (
+                    TestCreateMachine().test_create_machine_by_api_success()
+                )
                 VendingMachineServices().add_item(machine_id, "", 0)
                 assert http_error.exception.code == 400
 
@@ -76,7 +79,7 @@ class TestAddItem(unittest.TestCase):
     def test_add_item_func_successful_add_new_item(self) -> None:
         """Test adding item to existed machine with all requirements via function (new item) expected item added."""
         with app.app_context():
-            machine_id: int = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             mock_item: str = random_string()
             mock_amount: int = random_amount()
             new_item = VendingMachineServices().add_item(
@@ -90,7 +93,7 @@ class TestAddItem(unittest.TestCase):
     def test_add_item_by_function_successful_add_existed_item(self) -> None:
         """Test adding item to existed machine with all requirements via function (existed item) expected item added."""
         with app.app_context():
-            machine_id: int = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             mock_item: str = random_string()
             mock_amount: int = random_amount()
             VendingMachineServices().add_item(machine_id, mock_item, mock_amount)

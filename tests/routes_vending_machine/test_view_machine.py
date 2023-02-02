@@ -9,6 +9,7 @@ from app import app
 from models.model_vending_machine import VendingMachine
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils
+from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
 load_dotenv()
 
@@ -27,7 +28,7 @@ class TestViewMachine(unittest.TestCase):
     def test_view_machine_by_api_success(self) -> None:
         """Test viewing existed machine via API expected status code 200 and matching id."""
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             view_machine_url = f"{local_host_address}/machine/{machine_id}/info"
             response = app.test_client().get(view_machine_url)
             response_json = response.get_json()
@@ -45,7 +46,7 @@ class TestViewMachine(unittest.TestCase):
     def test_view_machine_by_function_success(self) -> None:
         """Test viewing existed machine via function expected type of result be VendingMachine."""
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             view_machine_response: VendingMachine = (
                 VendingMachineServices().get_machine(machine_id)
             )

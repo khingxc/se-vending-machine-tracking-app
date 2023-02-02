@@ -5,8 +5,9 @@ from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
 from app import app
-from services.services_vending_machine import VendingMachine, VendingMachineServices
+from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_amount, random_string
+from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
 load_dotenv()
 
@@ -19,13 +20,9 @@ class TestDeleteMachine(unittest.TestCase):
 
     def test_delete_machine_by_api_success(self) -> None:
         """Test deleting machine with valid machine id via API expected status code 204."""
-        mock_location: str = random_string()
         with app.app_context():
-            new_machine: VendingMachine = VendingMachineServices().create_machine(
-                mock_location
-            )
-            new_machine_id: int = new_machine.serializer()["id"]
-            delete_machine_url = f"{local_host_address}/machine/{new_machine_id}/delete"
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
+            delete_machine_url = f"{local_host_address}/machine/{machine_id}/delete"
             response = app.test_client().delete(delete_machine_url)
             assert response.status_code == 204
 
@@ -40,7 +37,7 @@ class TestDeleteMachine(unittest.TestCase):
     def test_delete_machine_by_function_success(self) -> None:
         """Test deleting machine with valid machine id via function expected status code 204."""
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             delete_machine: tuple[str, int] = VendingMachineServices().delete_machine(
                 machine_id
             )
@@ -52,7 +49,7 @@ class TestDeleteMachine(unittest.TestCase):
         mock_item: str = random_string()
         mock_amount = random_amount()
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
             delete_machine_response: tuple[
                 str, int

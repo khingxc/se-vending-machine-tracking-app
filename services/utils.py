@@ -3,7 +3,6 @@ import secrets
 import string
 from typing import Any, List
 
-import requests
 from dotenv import load_dotenv
 
 from extensions import db
@@ -53,23 +52,19 @@ class Utils:
 
     def get_valid_machine_id(self) -> int:
         """Return valid machine id for testing. If DB has no data, create new one."""
-        create_machine_url = f"{local_host_address}/machine/create"
         all_machines: list = self.get_all_machines()
-        if len(all_machines) == 0:
-            mock_location = random_string()
-            response = requests.post(
-                url=create_machine_url, data={"location": mock_location}
-            )
-            assert response.status_code == 201
-            machine_id = response.json()["id"]
-        else:
+        if len(all_machines) > 0:
+            all_machines: list = self.get_all_machines()
             random_machine: VendingMachine = secrets.choice(all_machines)
             machine_id: int = random_machine.id
-        return machine_id
+            return machine_id
+        return 0
 
     def get_invalid_machine_id(self) -> int:
         """Return invalid machine id."""
         all_machines: list = self.get_all_machines()
         all_valid_ids: List[int] = [machine.id for machine in all_machines]
+        if len(all_valid_ids) == 0:
+            return 0
         invalid_id = max(all_valid_ids) * 2
         return invalid_id

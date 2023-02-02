@@ -8,6 +8,7 @@ from app import app
 from services import utils
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_amount, random_string
+from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
 load_dotenv()
 
@@ -23,7 +24,7 @@ class TestEditItem(unittest.TestCase):
         mock_item: str = random_string()
         mock_amount = random_amount()
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
             edit_item_url = f"{local_host_address}/machine/{machine_id}/edit-item"
             new_amount = mock_amount + 20
@@ -35,7 +36,7 @@ class TestEditItem(unittest.TestCase):
     def test_edit_item_by_api_fail_no_params(self) -> None:
         """Test editing item with no param on existed machine via API expected to get error code 400."""
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             edit_item_url = f"{local_host_address}/machine/{machine_id}/edit-item"
             response_edit_item = app.test_client().post(
                 edit_item_url, data={"product": "", "amount": 0}
@@ -59,7 +60,7 @@ class TestEditItem(unittest.TestCase):
         mock_item: str = random_string()
         mock_amount = random_amount()
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
             new_amount = mock_amount + 20
             updated_stock: list = VendingMachineServices().edit_item(
@@ -73,7 +74,7 @@ class TestEditItem(unittest.TestCase):
         mock_item: str = random_string()
         mock_amount = random_amount()
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
             updated_stock: list = VendingMachineServices().edit_item(
                 machine_id, mock_item, 0
@@ -86,7 +87,7 @@ class TestEditItem(unittest.TestCase):
         mock_item: str = random_string()
         mock_amount = random_amount()
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
             new_mock_item: str = random_string()
             new_mock_amount: int = mock_amount + 20
@@ -102,7 +103,9 @@ class TestEditItem(unittest.TestCase):
         mock_amount = random_amount()
         with self.assertRaises(HTTPException) as http_error:
             with app.app_context():
-                machine_id = Utils().get_valid_machine_id()
+                machine_id: int = (
+                    TestCreateMachine().test_create_machine_by_api_success()
+                )
                 VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
                 VendingMachineServices().edit_item(machine_id, "", 0)
                 assert http_error.exception.code == 400
@@ -114,7 +117,9 @@ class TestEditItem(unittest.TestCase):
                 mock_item: str = random_string()
                 mock_amount = random_amount()
                 random_id = Utils().get_invalid_machine_id()
-                machine_id = Utils().get_valid_machine_id()
+                machine_id: int = (
+                    TestCreateMachine().test_create_machine_by_api_success()
+                )
                 new_amount = mock_amount + 20
                 VendingMachineServices().add_item(machine_id, mock_item, mock_amount)
                 VendingMachineServices().edit_item(random_id, mock_item, new_amount)

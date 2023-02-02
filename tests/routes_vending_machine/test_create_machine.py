@@ -19,7 +19,7 @@ create_machine_url = f"{local_host_address}/machine/create"
 class TestCreateMachine(unittest.TestCase):
     """Test create machine with additional cases included +/- cases and testing from functions and APIs."""
 
-    def test_create_machine_by_api_success(self) -> None:
+    def test_create_machine_by_api_success(self) -> int:
         """Test creating machine via API with valid param expected create successfully with matching results."""
         mock_location = utils.random_string()
         response = app.test_client().post(

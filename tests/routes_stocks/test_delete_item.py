@@ -5,9 +5,9 @@ from dotenv import load_dotenv
 from werkzeug.exceptions import HTTPException
 
 from app import app
-from models.model_vending_machine import VendingMachine
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_amount, random_string
+from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
 load_dotenv()
 
@@ -20,21 +20,15 @@ class TestDeleteItem(unittest.TestCase):
     def test_delete_item_by_api_success(self) -> None:
         """Test deleting item from existed machine via API expected a successful item delete."""
         with app.app_context():
-            mock_location = random_string()
-            new_machine: VendingMachine = VendingMachineServices().create_machine(
-                mock_location
-            )
-            new_machine_id: int = new_machine.id
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             mock_item = random_string()
             mock_amount = random_amount()
-            add_item_url = f"{local_host_address}/machine/{new_machine_id}/add-item"
+            add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
             response_create = app.test_client().post(
                 add_item_url, data={"product": mock_item, "amount": mock_amount}
             )
             assert response_create.status_code == 201
-            delete_item_url = (
-                f"{local_host_address}/machine/{new_machine_id}/delete-item"
-            )
+            delete_item_url = f"{local_host_address}/machine/{machine_id}/delete-item"
             response_delete = app.test_client().delete(
                 delete_item_url, data={"product": mock_item}
             )
@@ -43,7 +37,7 @@ class TestDeleteItem(unittest.TestCase):
     def test_delete_item_by_api_fail_no_params(self) -> None:
         """Test deleting item with no input via API expected error code 400 (bad request)."""
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             delete_item_url = f"{local_host_address}/machine/{machine_id}/delete-item"
             response_delete = app.test_client().delete(delete_item_url)
             assert response_delete.status_code == 400
@@ -51,7 +45,7 @@ class TestDeleteItem(unittest.TestCase):
     def test_delete_item_by_function_successful(self) -> None:
         """Test deleting item in existed machine via function expected to be successful."""
         with app.app_context():
-            machine_id = Utils().get_valid_machine_id()
+            machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
             mock_item = random_string()
             mock_amount = random_amount()
             add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
@@ -69,7 +63,9 @@ class TestDeleteItem(unittest.TestCase):
         """Test deleting item with invalid product via function expected error code 400."""
         with self.assertRaises(HTTPException) as http_error:
             with app.app_context():
-                machine_id = Utils().get_valid_machine_id()
+                machine_id: int = (
+                    TestCreateMachine().test_create_machine_by_api_success()
+                )
                 VendingMachineServices().delete_item(machine_id, "")
                 assert http_error.exception.code == 400
 
@@ -86,7 +82,9 @@ class TestDeleteItem(unittest.TestCase):
         """Test deleting invalid item in machine via function expected error code 404."""
         with self.assertRaises(HTTPException) as http_error:
             with app.app_context():
-                machine_id = Utils().get_valid_machine_id()
+                machine_id: int = (
+                    TestCreateMachine().test_create_machine_by_api_success()
+                )
                 mock_item = random_string()
                 VendingMachineServices().delete_item(machine_id, mock_item)
                 assert http_error.exception.code == 404

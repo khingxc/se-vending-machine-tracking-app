@@ -7,9 +7,9 @@ from werkzeug.exceptions import HTTPException
 
 from app import app
 from models.model_stock import Stock
-from models.model_vending_machine import VendingMachine
 from services.services_vending_machine import VendingMachineServices
 from services.utils import Utils, random_amount, random_string
+from tests.routes_vending_machine.test_create_machine import TestCreateMachine
 
 load_dotenv()
 
@@ -19,11 +19,7 @@ local_host_address = os.environ["LOCALHOST_ADDR"]
 def create_machine_with_stock() -> tuple[int, str, int]:
     """Create new machine that has an item inside. Return machine ID, product name, and product amount."""
     with app.app_context():
-        mock_location: str = random_string()
-        new_machine: VendingMachine = VendingMachineServices().create_machine(
-            mock_location
-        )
-        machine_id = new_machine.id
+        machine_id: int = TestCreateMachine().test_create_machine_by_api_success()
         mock_item = random_string()
         mock_amount = random_amount()
         add_item_url = f"{local_host_address}/machine/{machine_id}/add-item"
