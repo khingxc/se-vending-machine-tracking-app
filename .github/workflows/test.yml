@@ -19,9 +19,9 @@ jobs:
       database:
         image: postgres
         env:
-          POSTGRES_USER=user
-          POSTGRES_PASSWORD=hardpass
-          POSTGRES_DB=vending_machine_tracker
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: hardpass
+          POSTGRES_DB: vending_machine_tracker
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
