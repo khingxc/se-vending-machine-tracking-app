@@ -1,4 +1,4 @@
-name: Statis Test
+name: Static Test
 
 on:
   push:
